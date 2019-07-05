@@ -11,6 +11,8 @@ dependencies:
   cupertino_icons: ^0.1.2
   barcode_scan: ^0.0.4
   url_launcher: any
+  google_sign_in: any
+  firebase_auth: any
 
 dev_dependencies:
   flutter_test:
@@ -18,6 +20,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/lucy-logo-sm.png
+    - assets/images/google-logo.jpg
   fonts:
     - family: Product Sans
       fonts:
