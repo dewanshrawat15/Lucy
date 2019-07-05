@@ -1,0 +1,24 @@
+name: lucy
+description: A new Flutter project.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^0.1.2
+  barcode_scan: ^0.0.4
+  url_launcher: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Product Sans
+      fonts:
+        - asset: assets/fonts/psans.ttf
