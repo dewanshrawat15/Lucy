@@ -4,9 +4,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:path_provider/path_provider.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

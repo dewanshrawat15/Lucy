@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'home.dart';
 // import 'package:barcode_scan/barcode_scan.dart';
 // import 'package:url_launcher/url_launcher.dart';
 // import 'package:path_provider/path_provider.dart';
@@ -27,14 +28,34 @@ class MyCustomForm extends StatefulWidget {
 }
 
 class _MyCustomFormState extends State<MyCustomForm> {
+  GoogleSignInAccount _currentUser;
+  final google_blue = const Color(0xFF4285F4);
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+      setState(() {
+        _currentUser = account;
+      });
+      if (_currentUser != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      }
+    });
+    googleSignIn.signInSilently();
+  }
+
+
   @override
   void dispose() {
     super.dispose();
   }
 
-  final google_blue = const Color(0xFF4285F4);
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  final FirebaseAuth auth = FirebaseAuth.instance;
   Future<FirebaseUser> _handleSignIn() async {
     final GoogleSignInAccount googleUser = await googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -45,7 +66,9 @@ class _MyCustomFormState extends State<MyCustomForm> {
     );
 
     final FirebaseUser user = await auth.signInWithCredential(credential);
-    print("signed in " + user.displayName);
+    setState((){
+      HomeScreen();
+    });
     return user;
   }
 

@@ -9,8 +9,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.2
-  barcode_scan: ^0.0.4
   url_launcher: any
+  barcode_scan: ^1.0.0
   google_sign_in: any
   firebase_auth: any
 
