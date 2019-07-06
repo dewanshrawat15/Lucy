@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_database/firebase_database.dart';
 // import 'package:path_provider/path_provider.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -34,10 +38,25 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  final databaseReference = FirebaseDatabase.instance.reference();
+
+  void createRecord(String urlText) async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseUser user = await auth.currentUser();
+    final uid = user.uid;
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('kk:mm:ss EEE d MMM').format(now);
+    databaseReference.child(uid).push().set({
+      'URL': urlText,
+      'time': formattedDate,
+    });
+  }
+
   Future _scanQR() async {
     try {
       String qrResult = await BarcodeScanner.scan();
       if(await canLaunch(qrResult)){
+        createRecord(qrResult);
         _launchURL(qrResult);
       }
       else{

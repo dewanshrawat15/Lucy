@@ -3,9 +3,6 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'home.dart';
-// import 'package:barcode_scan/barcode_scan.dart';
-// import 'package:url_launcher/url_launcher.dart';
-// import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(MyApp());
 
