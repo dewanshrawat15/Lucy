@@ -21,12 +21,15 @@ To link the app to your firebase console, create a project, click the Android/iO
   - Run ``` flutter run --release ``` on your console
   - Click the camera button to open the Scanner and point and scan.
 - If you want to just build the apk
-  - Run ``` flutter build apk --release ```
+  - Run ``` flutter build apk --release ``` (for Android users)
 
 PS, if you face any issues anywhere please feel free to open up a thread. I would love to help you out as soon as possible.
 
 # Known Issue
 None as of now. Currently, I'm trying to add a section to show a log of scanned QR Codes. Feel free to open an issue if any!
+
+## Wanna Contribute ?
+Aww, great. Just go through [CONTRIBUTING.MD](https://github.com/dewanshrawat15/Lucy/blob/master/CONTRIBUTING.md) once!
 
 # License
 > The MIT License
