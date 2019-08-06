@@ -1,3 +1,4 @@
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -39,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   final databaseReference = FirebaseDatabase.instance.reference();
-
+  var user_id = '';
   void createRecord(String urlText) async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final FirebaseUser user = await auth.currentUser();
@@ -70,6 +71,18 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  _setUserIDFunction() async{
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseUser user = await auth.currentUser();
+    user_id = user.uid;
+  }
+
+  @override
+  void initState() {
+    _setUserIDFunction();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,23 +90,43 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         title: Text("Lucy"),
       ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(32.0),
+      body: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(32.0),
+                ),
+                Text(
+                  'Your History',
+                  style: TextStyle(fontSize: 25.0, fontFamily: 'Product Sans'),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(32.0),
+                ),
+                Flexible(
+                  child: FirebaseAnimatedList(
+                    query: databaseReference.child(user_id),
+                    itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index) {
+                      return SizeTransition(
+                        sizeFactor: animation,
+                        child: Text("${snapshot.value.toString()}"),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-            Text(
-              'Your History',
-              style: TextStyle(fontSize: 25.0, fontFamily: 'Product Sans'),
-            ),
-          ],
+          ),
         ),
-      ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           FloatingActionButton(
+            onPressed: (){
+              print(user_id);
+            },
             heroTag: 'image0',
             tooltip: 'Generate QR',
             child: const Icon(Icons.image),
