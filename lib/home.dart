@@ -106,15 +106,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: EdgeInsets.all(32.0),
                 ),
                 Flexible(
-                  child: FirebaseAnimatedList(
-                    query: databaseReference.child(user_id),
-                    itemBuilder: (BuildContext context, DataSnapshot snapshot, Animation<double> animation, int index) {
-                      return SizeTransition(
-                        sizeFactor: animation,
-                        child: Text("${snapshot.value.toString()}"),
-                      );
+                  child: StreamBuilder(
+                    stream: databaseReference.child('$user_id').onValue,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData){
+                        return Text("${snapshot.data}");
+                      }
+                      else{
+                        return CircularProgressIndicator();
+                      }
                     },
                   ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(32.0),
                 ),
               ],
             ),
