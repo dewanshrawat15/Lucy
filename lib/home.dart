@@ -1,4 +1,3 @@
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -6,8 +5,7 @@ import 'dart:async';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:firebase_database/firebase_database.dart';
-// import 'package:path_provider/path_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -30,6 +28,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   String result = "";
+  var user_id = '';
+
+  final databaseReference = Firestore.instance;
+
+  void createRecord(String urlText) async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseUser user = await auth.currentUser();
+    final uid = user.uid;
+    print(uid);
+    print("Printed?");
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('kk:mm:ss EEE d MMM').format(now);
+    Map data = {
+      "URL": urlText,
+      "time": formattedDate
+    };
+    databaseReference.collection(uid).add(data);
+  }
 
   _launchURL(String url) async {
     if (await canLaunch(url)) {
@@ -37,20 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       throw 'Could not launch $url';
     }
-  }
-
-  final databaseReference = FirebaseDatabase.instance.reference();
-  var user_id = '';
-  void createRecord(String urlText) async {
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final FirebaseUser user = await auth.currentUser();
-    final uid = user.uid;
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('kk:mm:ss EEE d MMM').format(now);
-    databaseReference.child(uid).push().set({
-      'URL': urlText,
-      'time': formattedDate,
-    });
   }
 
   Future _scanQR() async {
@@ -71,15 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  _setUserIDFunction() async{
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final FirebaseUser user = await auth.currentUser();
-    user_id = user.uid;
-  }
-
   @override
   void initState() {
-    _setUserIDFunction();
     super.initState();
   }
 
@@ -90,48 +85,17 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         title: Text("Lucy"),
       ),
-      body: Container(
+      body: SingleChildScrollView(
+        child: Container(
           height: MediaQuery.of(context).size.height,
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(32.0),
-                ),
-                Text(
-                  'Your History',
-                  style: TextStyle(fontSize: 25.0, fontFamily: 'Product Sans'),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(32.0),
-                ),
-                Flexible(
-                  child: StreamBuilder(
-                    stream: databaseReference.child('$user_id').onValue,
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.hasData){
-                        return Text("${snapshot.data}");
-                      }
-                      else{
-                        return CircularProgressIndicator();
-                      }
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(32.0),
-                ),
-              ],
-            ),
-          ),
+          child: RecordList(),
         ),
+      ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           FloatingActionButton(
-            onPressed: (){
-              print(user_id);
-            },
+            onPressed:(){},
             heroTag: 'image0',
             tooltip: 'Generate QR',
             child: const Icon(Icons.image),
@@ -147,6 +111,31 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class RecordList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('records').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return new Center(child: CircularProgressIndicator(),);
+          default:
+            return new ListView(
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                return new ListTile(
+                  title: new Text(document['URL']),
+                  subtitle: new Text(document['time']),
+                );
+              }).toList(),
+            );
+        }
+      },
     );
   }
 }

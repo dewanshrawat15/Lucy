@@ -13,7 +13,7 @@ dependencies:
   barcode_scan: ^1.0.0
   google_sign_in: any
   firebase_auth: any
-  firebase_database: any
+  cloud_firestore: any
   intl: any
 
 dev_dependencies:
