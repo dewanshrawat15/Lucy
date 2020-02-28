@@ -1,57 +1,34 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'home.dart';
+import 'package:lucy/home.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+void main(){
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LoginScreen(),
       theme: ThemeData(
         primaryColor: Colors.amber,
+        accentColor: Colors.amber,
+        buttonColor: Colors.amber,
       ),
-      debugShowCheckedModeBanner: false,
-      home: MyCustomForm(),
-    );
-  }
+    )
+  );
 }
 
-class MyCustomForm extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _MyCustomFormState createState() => _MyCustomFormState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _MyCustomFormState extends State<MyCustomForm> {
-  GoogleSignInAccount _currentUser;
-  final google_blue = const Color(0xFF4285F4);
+class _LoginScreenState extends State<LoginScreen> {
+
+  String name, email, displayPicture;
+
+  final googleBlue = const Color(0xFF4285F4);
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final FirebaseAuth auth = FirebaseAuth.instance;
-
-  @override
-  void initState() {
-    super.initState();
-    googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
-      setState(() {
-        _currentUser = account;
-      });
-      if (_currentUser != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
-      }
-    });
-    googleSignIn.signInSilently();
-  }
-
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   Future<FirebaseUser> _handleSignIn() async {
     final GoogleSignInAccount googleUser = await googleSignIn.signIn();
@@ -63,16 +40,28 @@ class _MyCustomFormState extends State<MyCustomForm> {
     );
 
     final FirebaseUser user = await auth.signInWithCredential(credential);
-    setState((){
-      HomeScreen();
-    });
     return user;
   }
 
   Widget signInButton(){
    return new Container(
       child: new RaisedButton(
-        onPressed: () => _handleSignIn().then((FirebaseUser user) => print(user)).catchError((e) => print(e)),
+        onPressed: () async{
+          FirebaseUser user = await _handleSignIn();
+          name = user.displayName;
+          email = user.email;
+          displayPicture = user.photoUrl;       
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomeScreen(
+                name: name,
+                email: email,
+                displayPicURL: displayPicture,
+              )
+            )
+          );
+        },
         padding: EdgeInsets.only(top: 3.0,bottom: 3.0,left: 3.0),
         color: const Color(0xFF4285F4),
         child: new Row(
@@ -93,34 +82,44 @@ class _MyCustomFormState extends State<MyCustomForm> {
   }
 
   @override
+  void initState() {
+    // signInSilently();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.amber,
-      body: Center(
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          // mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(32.0),
-            ),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Lucy',
-                style: TextStyle(fontSize: 32.0, color: Colors.white, fontFamily: "Product Sans",),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: 64,
               ),
-            ),
-            Image.asset(
-              'assets/images/lucy-logo-sm.png',
-              width: 300.0,
-              height: 300.0,
-              fit: BoxFit.cover,
-            ),
-            signInButton(),
-          ],
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Lucy',
+                  style: TextStyle(fontSize: 32.0, color: Colors.white, fontFamily: "Product Sans",),
+                ),
+              ),
+              Image.asset(
+                'assets/images/lucy-logo-sm.png',
+                width: 300.0,
+                height: 300.0,
+                fit: BoxFit.cover,
+              ),
+              signInButton(),
+              SizedBox(
+                height: 64,
+              )
+            ],
+          ),
         ),
-      ),
+      )
     );
   }
 }
