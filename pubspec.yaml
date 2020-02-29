@@ -23,8 +23,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/lucy-logo-sm.png
-    - assets/images/google-logo.jpg
+    - assets/images/
   fonts:
     - family: Product Sans
       fonts:
