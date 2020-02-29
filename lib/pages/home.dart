@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lucy/pages/accounts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -27,6 +28,24 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         centerTitle: true,
+        actions: <Widget>[
+          InkWell(
+            onTap: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => AccountScreen(name: widget.name, email: widget.email, photoUrl: widget.displayPicURL,)
+                )
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Icon(
+                Icons.person
+              ),
+            ),
+          )
+        ],
       ),
       body: StreamBuilder(
         stream: Firestore.instance.collection("records").where("email", isEqualTo: widget.email).snapshots(),

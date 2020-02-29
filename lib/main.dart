@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lucy/home.dart';
+import 'pages/home.dart';
 
 void main(){
   runApp(
@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
           name = user.displayName;
           email = user.email;
           displayPicture = user.photoUrl;       
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (BuildContext context) => HomeScreen(
@@ -81,9 +81,26 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  signInSilently() async{
+    var user = await googleSignIn.signInSilently();
+    name = user.displayName;
+    email = user.email;
+    displayPicture = user.photoUrl;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => HomeScreen(
+          name: name,
+          email: email,
+          displayPicURL: displayPicture,
+        )
+      )
+    );
+  }
+
   @override
   void initState() {
-    // signInSilently();
+    signInSilently();
     super.initState();
   }
 
