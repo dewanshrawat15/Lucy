@@ -143,6 +143,9 @@ class _HomeScreenState extends State<HomeScreen> {
             "time": time
           };
           collectionRef.add(data);
+          if(await canLaunch(url)){
+            launch(url);
+          }
         },
         child: Icon(Icons.camera_alt),
       ),
