@@ -25,6 +25,6 @@ flutter:
   assets:
     - assets/images/
   fonts:
-    - family: Product Sans
+    - family: Montserrat
       fonts:
-        - asset: assets/fonts/psans.ttf
+        - asset: assets/fonts/Montserrat-Regular.ttf

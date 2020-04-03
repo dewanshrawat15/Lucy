@@ -51,7 +51,7 @@ class _AccountScreenState extends State<AccountScreen> {
               Text(
                 widget.name,
                 style: TextStyle(
-                  fontFamily: "Product Sans",
+                  fontFamily: "Montserrat",
                   fontSize: 36
                 ),
               ),
@@ -61,7 +61,7 @@ class _AccountScreenState extends State<AccountScreen> {
               Text(
                 widget.email,
                 style: TextStyle(
-                  fontFamily: "Product Sans",
+                  fontFamily: "Montserrat",
                   fontSize: 20
                 ),
               ),

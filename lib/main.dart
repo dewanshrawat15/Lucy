@@ -120,7 +120,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: EdgeInsets.all(16.0),
                 child: Text(
                   'Lucy',
-                  style: TextStyle(fontSize: 32.0, color: Colors.white, fontFamily: "Product Sans",),
+                  style: TextStyle(
+                    fontSize: 32.0,
+                    color: Colors.white,
+                    fontFamily: "Montserrat",
+                  ),
                 ),
               ),
               Image.asset(

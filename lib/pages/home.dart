@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(
           "History",
           style: TextStyle(
-            fontFamily: "Product Sans"
+            fontFamily: "Montserrat"
           ),
         ),
         centerTitle: true,
@@ -81,13 +81,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: Text(
                             snapshot.data.documents[index]["url"],
                             style: TextStyle(
-                              fontFamily: "Product Sans"
+                              fontFamily: "Montserrat"
                             ),
                           ),
                           subtitle: Text(
                             snapshot.data.documents[index]["time"],
                             style: TextStyle(
-                              fontFamily: "Product Sans"
+                              fontFamily: "Montserrat"
                             ),
                           ),
                         ),
@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text(
                         "No Records found",
                         style: TextStyle(
-                          fontFamily: "Product Sans",
+                          fontFamily: "Montserrat",
                           fontSize: 24
                         ),
                       ),
